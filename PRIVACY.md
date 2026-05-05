@@ -138,9 +138,13 @@ We rely on the security mechanisms provided by Apple iOS / watchOS for on-device
 
 ---
 
-## 10. Children
+## 10. Children and Minors
 
-The Application is not directed to children under the age of 13 and is not intended for use by them. The Application contains topics related to emotional well-being, alcohol use, and personality assessments that may be inappropriate for younger users. The Application is rated for users who are at least 17 years old or older as required by the App Store age rating, and use by minors should occur only with the active involvement and supervision of a parent or legal guardian. The Service Provider does not knowingly collect personal information from children under 13 (or under the equivalent minimum age in your jurisdiction). If you believe a child has provided personal information to the Service Provider, contact [moodshaperapp@gmail.com](mailto:moodshaperapp@gmail.com) and we will take reasonable steps to delete it.
+The Application is rated **13+** in the Apple App Store and is not directed to, intended for, or designed for children under the age of 13. The Service Provider does not knowingly collect personal information from children under 13 (or under the equivalent minimum age set by applicable law in your jurisdiction, which may be higher — for example, 16 in parts of the European Economic Area). If you are under 13, you must not download, install, or use the Application.
+
+If you are between 13 and the age of digital majority in your jurisdiction, you may use the Application only with the active involvement, review, and verifiable consent of a parent or legal guardian. Parents and legal guardians are responsible for monitoring the use of the Application by minors and for deciding whether the topics covered (including emotional well-being, alcohol-use questions, personality assessments, and questions about low mood or self-harm such as PHQ-9 question 9) are appropriate for the minor.
+
+If you believe that a child under 13 has provided personal information to the Service Provider, contact [moodshaperapp@gmail.com](mailto:moodshaperapp@gmail.com) and we will take reasonable steps to delete it.
 
 ---
 
@@ -176,7 +180,7 @@ To the fullest extent permitted by applicable law, and subject to the EULA, the 
 
 ## 15. Consent and Acceptance
 
-By installing or using the Application you acknowledge that you have read this Privacy Policy and the EULA, that you are at least 17 years old (or the higher age required by the App Store rating in your jurisdiction), that the Application is **not a medical device and does not provide medical or psychological advice**, and that you accept all terms of this Privacy Policy and the EULA without modification. If you do not consent, you must uninstall the Application and discontinue use.
+By installing or using the Application you acknowledge that you have read this Privacy Policy and the EULA, that you are at least 13 years old (or, if you are between 13 and the age of digital majority in your jurisdiction, that a parent or legal guardian has reviewed this Privacy Policy and the EULA and consented on your behalf), that the Application is **not a medical device and does not provide medical or psychological advice**, and that you accept all terms of this Privacy Policy and the EULA without modification. If you do not consent, you must uninstall the Application and discontinue use.
 
 ---
 
