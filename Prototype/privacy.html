@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Privacy — MoodShapes</title>
+<meta name="description" content="The MoodShapes privacy policy. We don't collect your data — full stop." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="icon" type="image/png" href="assets/app-icon.png" />
+
+<style>
+  :root {
+    --lavender: #B7A3E0;
+    --lavender-soft: #D9CCF0;
+    --bg-0: #0E0A1F;
+    --ink: #F5EFFF;
+    --ink-dim: #B9AFD0;
+    --ink-low: #7A6F95;
+    --card: rgba(28, 20, 56, 0.55);
+    --card-border: rgba(183, 163, 224, 0.18);
+    --mood-awesome: #6FCB7A;
+    --mood-good:    #5C84D6;
+    --mood-normal:  #E9C44B;
+    --mood-bad:     #E0823F;
+    --mood-awful:   #C16A5E;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: var(--ink);
+    background: var(--bg-0);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.6;
+  }
+
+  .bg {
+    position: fixed; inset: 0; z-index: -2;
+    background:
+      radial-gradient(60vw 60vw at 18% 8%, rgba(140, 108, 196, 0.45), transparent 60%),
+      radial-gradient(70vw 70vw at 92% 18%, rgba(91, 132, 214, 0.25), transparent 65%),
+      radial-gradient(80vw 80vw at 50% 95%, rgba(184, 157, 222, 0.14), transparent 70%),
+      linear-gradient(180deg, #15102e 0%, #0c0820 50%, #0a0719 100%);
+  }
+  .grain {
+    position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    opacity: 0.5; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.06 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+
+  .container { width: 100%; max-width: 880px; margin: 0 auto; padding: 0 32px; }
+  .container.wide { max-width: 1240px; }
+
+  /* Nav */
+  nav.top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 28px 0;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 12px;
+    text-decoration: none; color: var(--ink);
+  }
+  .brand img {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 18px rgba(140, 108, 196, 0.5);
+  }
+  .brand-name {
+    font-family: "Fraunces", serif;
+    font-weight: 600;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+  }
+  .nav-back {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--ink-dim);
+    font-size: 14px;
+    text-decoration: none;
+    padding: 10px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: background .2s, color .2s;
+  }
+  .nav-back:hover { background: rgba(255,255,255,0.06); color: var(--ink); }
+
+  /* Header */
+  header.page {
+    padding: 60px 0 40px;
+    text-align: center;
+    position: relative;
+  }
+  .header-shapes {
+    display: flex; justify-content: center; align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+    height: 80px;
+  }
+  .header-shapes img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4));
+    animation: bob 4s ease-in-out infinite;
+  }
+  .header-shapes img:nth-child(1) { animation-delay: 0s;   transform: rotate(-12deg); }
+  .header-shapes img:nth-child(2) { animation-delay: .2s;  transform: rotate(-6deg); }
+  .header-shapes img:nth-child(3) { animation-delay: .4s;  transform: rotate(0deg); }
+  .header-shapes img:nth-child(4) { animation-delay: .6s;  transform: rotate(6deg); }
+  .header-shapes img:nth-child(5) { animation-delay: .8s;  transform: rotate(12deg); }
+  @keyframes bob {
+    0%,100% { translate: 0 0; }
+    50%     { translate: 0 -10px; }
+  }
+
+  .kicker {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--lavender);
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+  h1 {
+    font-family: "Fraunces", serif;
+    font-weight: 600;
+    font-size: clamp(48px, 7vw, 88px);
+    letter-spacing: -0.025em;
+    line-height: 1;
+    margin: 0 0 18px;
+  }
+  h1 em {
+    font-style: italic;
+    background: linear-gradient(120deg, #d9c5f5, #ffd0c2 50%, #b6e1bf);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .lede {
+    font-size: 19px;
+    color: var(--ink-dim);
+    max-width: 620px;
+    margin: 0 auto 12px;
+    text-wrap: pretty;
+  }
+  .meta {
+    font-size: 13px;
+    color: var(--ink-low);
+    letter-spacing: 0.04em;
+  }
+
+  /* TL;DR strip */
+  .tldr {
+    margin: 56px 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .tldr-card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 22px;
+    padding: 28px 24px;
+    text-align: center;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+  .tldr-card .num {
+    font-family: "Fraunces", serif;
+    font-weight: 600;
+    font-size: 56px;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .tldr-card.green .num { color: var(--mood-awesome); }
+  .tldr-card.blue  .num { color: var(--mood-good); }
+  .tldr-card.lav   .num { color: var(--lavender-soft); }
+  .tldr-card .lab {
+    color: var(--ink-dim);
+    font-size: 14px;
+  }
+  @media (max-width: 720px) {
+    .tldr { grid-template-columns: 1fr; }
+  }
+
+  /* Policy body */
+  article.policy {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 28px;
+    padding: 56px clamp(28px, 5vw, 64px);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    margin-bottom: 80px;
+  }
+  article.policy h2 {
+    font-family: "Fraunces", serif;
+    font-weight: 600;
+    font-size: 26px;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    margin: 0 0 14px;
+    text-wrap: balance;
+  }
+  article.policy section + section {
+    margin-top: 36px;
+    padding-top: 36px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  article.policy p {
+    margin: 0 0 14px;
+    color: var(--ink-dim);
+    font-size: 16px;
+  }
+  article.policy p:last-child { margin-bottom: 0; }
+  article.policy strong { color: var(--ink); font-weight: 600; }
+  article.policy a {
+    color: var(--lavender-soft);
+    text-decoration: underline;
+    text-decoration-color: rgba(217, 204, 240, 0.4);
+    text-underline-offset: 3px;
+    transition: text-decoration-color .2s;
+  }
+  article.policy a:hover { text-decoration-color: var(--lavender-soft); }
+
+  .section-tag {
+    display: inline-block;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--lavender);
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+
+  /* Contact card */
+  .contact {
+    margin-top: 24px;
+    padding: 22px 24px;
+    background: rgba(140, 108, 196, 0.1);
+    border: 1px solid rgba(183, 163, 224, 0.22);
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px;
+  }
+  .contact .label {
+    font-size: 13px;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 4px;
+  }
+  .contact .email {
+    font-family: "Fraunces", serif;
+    font-size: 22px;
+    color: var(--ink);
+  }
+  .contact a.email-cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 18px;
+    background: var(--ink);
+    color: var(--bg-0);
+    border-radius: 999px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: transform .2s;
+  }
+  .contact a.email-cta:hover { transform: translateY(-1px); }
+
+  footer {
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 32px 0 48px;
+    color: var(--ink-low);
+    font-size: 13px;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 12px;
+  }
+  footer a { color: var(--ink-dim); text-decoration: none; margin-left: 20px; }
+  footer a:hover { color: var(--ink); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.001s !important; animation-iteration-count: 1 !important; }
+  }
+</style>
+</head>
+<body>
+  <div class="bg"></div>
+  <div class="grain"></div>
+
+  <div class="container wide">
+    <nav class="top">
+      <a class="brand" href="index.html">
+        <img src="assets/app-icon.png" alt="MoodShapes app icon" />
+        <span class="brand-name">MoodShapes</span>
+      </a>
+      <a class="nav-back" href="index.html">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M19 12H5m0 0l6-6m-6 6l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back home
+      </a>
+    </nav>
+  </div>
+
+  <div class="container">
+    <header class="page">
+      <div class="header-shapes" aria-hidden="true">
+        <img src="assets/mood-awful.png" alt="" />
+        <img src="assets/mood-bad.png" alt="" />
+        <img src="assets/mood-normal.png" alt="" />
+        <img src="assets/mood-good.png" alt="" />
+        <img src="assets/mood-awesome.png" alt="" />
+      </div>
+      <div class="kicker">Privacy Policy</div>
+      <h1>We don't want <em>your data</em>.</h1>
+      <p class="lede">MoodShapes is built to be a quiet place for your moods — not a way to harvest them. The whole policy fits in three numbers.</p>
+      <div class="meta">Effective 22 July 2024</div>
+    </header>
+
+    <div class="tldr">
+      <div class="tldr-card green">
+        <div class="num">0</div>
+        <div class="lab">information collected</div>
+      </div>
+      <div class="tldr-card blue">
+        <div class="num">0</div>
+        <div class="lab">third parties involved</div>
+      </div>
+      <div class="tldr-card lav">
+        <div class="num">100%</div>
+        <div class="lab">on your device</div>
+      </div>
+    </div>
+
+    <article class="policy">
+
+      <section>
+        <span class="section-tag">Scope</span>
+        <h2>Who this policy is for.</h2>
+        <p>This privacy policy applies to the <strong>MoodShapes</strong> app (the "Application") for mobile devices, created by <strong>Ausianovich Kanstantsin</strong> (the "Service Provider") as a commercial service. The service is intended for use "as is".</p>
+      </section>
+
+      <section>
+        <span class="section-tag">Data we collect</span>
+        <h2>What information does the Application obtain — and how is it used?</h2>
+        <p>The Application does not obtain any information when you download and use it. Registration is not required to use the Application.</p>
+      </section>
+
+      <section>
+        <span class="section-tag">Location</span>
+        <h2>Does the Application collect precise real-time location information of the device?</h2>
+        <p>This Application does not collect precise information about the location of your mobile device.</p>
+      </section>
+
+      <section>
+        <span class="section-tag">Sharing</span>
+        <h2>Do third parties see and/or have access to information obtained by the Application?</h2>
+        <p>Since the Application does not collect any information, no data is shared with third parties.</p>
+      </section>
+
+      <section>
+        <span class="section-tag">Opt-out</span>
+        <h2>What are my opt-out rights?</h2>
+        <p>You can stop all collection of information by the Application easily by uninstalling it. You may use the standard uninstall processes available as part of your mobile device or via the mobile application marketplace or network.</p>
+      </section>
+
+      <section>
+        <span class="section-tag">Children</span>
+        <h2>Children.</h2>
+        <p>The Application is not used to knowingly solicit data from or market to children under the age of 13.</p>
+        <p>The Service Provider does not knowingly collect personally identifiable information from children. The Service Provider encourages all children to never submit any personally identifiable information through the Application and/or Services. The Service Provider encourages parents and legal guardians to monitor their children's Internet usage and to help enforce this Policy by instructing their children never to provide personally identifiable information through the Application and/or Services without their permission. If you have reason to believe that a child has provided personally identifiable information to the Service Provider through the Application and/or Services, please contact the Service Provider at <a href="mailto:moodshaperapp@gmail.com">moodshaperapp@gmail.com</a> so the necessary actions can be taken.</p>
+        <p>You must also be at least 16 years of age to consent to the processing of your personally identifiable information in your country (in some countries we may allow your parent or guardian to do so on your behalf).</p>
+      </section>
+
+      <section>
+        <span class="section-tag">Security</span>
+        <h2>Security.</h2>
+        <p>The Service Provider is concerned about safeguarding the confidentiality of your information. However, since the Application does not collect any information, there is no risk of your data being accessed by unauthorized individuals.</p>
+      </section>
+
+      <section>
+        <span class="section-tag">Changes</span>
+        <h2>Changes to this policy.</h2>
+        <p>This Privacy Policy may be updated from time to time for any reason. The Service Provider will notify you of any changes by updating this page with the new Privacy Policy. You are advised to consult this Privacy Policy regularly for any changes, as continued use is deemed approval of all changes.</p>
+        <p>This privacy policy is effective as of <strong>22 July 2024</strong>.</p>
+      </section>
+
+      <section>
+        <span class="section-tag">Consent</span>
+        <h2>Your consent.</h2>
+        <p>By using the Application, you are consenting to the processing of your information as set forth in this Privacy Policy now and as amended by the Service Provider.</p>
+      </section>
+
+      <section>
+        <span class="section-tag">Contact</span>
+        <h2>Questions? We're easy to reach.</h2>
+        <p>If you have any questions regarding privacy while using the Application, or have questions about the practices, please contact the Service Provider via email.</p>
+        <div class="contact">
+          <div>
+            <div class="label">Service provider</div>
+            <div class="email">moodshaperapp@gmail.com</div>
+          </div>
+          <a class="email-cta" href="mailto:moodshaperapp@gmail.com">
+            Send an email
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14m0 0l-6-6m6 6l-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </section>
+
+    </article>
+  </div>
+
+  <div class="container wide">
+    <footer>
+      <div>© 2026 MoodShapes · Made with care for your inner weather</div>
+      <div>
+        <a href="index.html">Home</a>
+        <a href="https://apps.apple.com/app/id6447459212" target="_blank" rel="noopener">App Store</a>
+      </div>
+    </footer>
+  </div>
+
+</body>
+</html>

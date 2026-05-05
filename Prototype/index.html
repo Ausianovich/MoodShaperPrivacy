@@ -1,0 +1,795 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MoodShapes — track how you feel, in shapes</title>
+<meta name="description" content="MoodShapes is a playful, private mood journal for iPhone. Log your day with five expressive shapes, watch trends emerge, and check in on your well-being." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="icon" type="image/png" href="assets/app-icon.png" />
+
+<style>
+  :root {
+    /* Brand palette pulled from the app */
+    --lavender: #B7A3E0;
+    --lavender-soft: #D9CCF0;
+    --lavender-deep: #6B4FB3;
+    --bg-0: #0E0A1F;
+    --bg-1: #1A1338;
+    --bg-2: #2A1F58;
+    --bg-3: #3A2B72;
+    --ink: #F5EFFF;
+    --ink-dim: #B9AFD0;
+    --ink-low: #7A6F95;
+    --card: rgba(28, 20, 56, 0.55);
+    --card-border: rgba(183, 163, 224, 0.18);
+
+    /* Mood colors from the screenshots */
+    --mood-awesome: #6FCB7A;   /* green */
+    --mood-good:    #5C84D6;   /* blue */
+    --mood-normal:  #E9C44B;   /* yellow */
+    --mood-bad:     #E0823F;   /* orange */
+    --mood-awful:   #C16A5E;   /* red */
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: var(--ink);
+    background: var(--bg-0);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+
+  /* === Background === */
+  .bg {
+    position: fixed; inset: 0; z-index: -2;
+    background:
+      radial-gradient(60vw 60vw at 18% 8%, rgba(140, 108, 196, 0.55), transparent 60%),
+      radial-gradient(70vw 70vw at 92% 18%, rgba(91, 132, 214, 0.32), transparent 65%),
+      radial-gradient(80vw 80vw at 50% 95%, rgba(184, 157, 222, 0.18), transparent 70%),
+      linear-gradient(180deg, #15102e 0%, #0c0820 50%, #0a0719 100%);
+  }
+  .grain {
+    position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    opacity: 0.5; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.06 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+
+  /* === Layout === */
+  .container {
+    width: 100%;
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* === Nav === */
+  header.site-header {
+    position: relative;
+    z-index: 50;
+  }
+  nav.top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 28px 0;
+    position: relative;
+    z-index: 50;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 12px;
+    text-decoration: none; color: var(--ink);
+  }
+  .brand img {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 18px rgba(140, 108, 196, 0.5);
+  }
+  .brand-name {
+    font-family: "Fraunces", serif;
+    font-weight: 600;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+  }
+  .nav-links {
+    display: flex; gap: 28px;
+    font-size: 14px; color: var(--ink-dim);
+  }
+  .nav-links a { color: inherit; text-decoration: none; transition: color .2s; }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 18px;
+    background: var(--ink);
+    color: var(--bg-0);
+    font-weight: 700;
+    font-size: 14px;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(245, 239, 255, 0.2); }
+  @media (max-width: 720px) {
+    .nav-links { display: none; }
+  }
+
+  /* === Hero === */
+  .hero {
+    position: relative;
+    padding: 60px 0 120px;
+    min-height: 760px;
+    z-index: 1;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    align-items: center;
+    gap: 60px;
+  }
+  .hero-copy { position: relative; z-index: 3; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 8px 14px;
+    background: rgba(183, 163, 224, 0.12);
+    border: 1px solid rgba(183, 163, 224, 0.24);
+    border-radius: 999px;
+    font-size: 13px;
+    color: var(--lavender-soft);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  .eyebrow .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--mood-awesome);
+    box-shadow: 0 0 12px var(--mood-awesome);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 50% { opacity: 0.5; } }
+
+  h1 {
+    font-family: "Fraunces", serif;
+    font-weight: 600;
+    font-size: clamp(46px, 7vw, 96px);
+    line-height: 1.04;
+    letter-spacing: -0.025em;
+    margin: 22px 0 24px;
+    text-wrap: balance;
+  }
+  h1 em {
+    font-style: italic;
+    background: linear-gradient(120deg, #d9c5f5, #ffd0c2 50%, #b6e1bf);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    display: inline-block;
+    padding: 0.12em 0.18em 0.18em 0.06em;
+    margin-right: -0.1em;
+    line-height: 1.05;
+    overflow: visible;
+  }
+  .hero-sub {
+    font-size: clamp(17px, 1.4vw, 20px);
+    line-height: 1.55;
+    color: var(--ink-dim);
+    max-width: 540px;
+    margin: 0 0 36px;
+  }
+
+  .cta-row {
+    display: flex; align-items: center; gap: 18px;
+    flex-wrap: wrap;
+  }
+  .app-store-badge {
+    display: inline-flex; align-items: center; gap: 12px;
+    padding: 12px 22px 12px 18px;
+    background: #000;
+    color: #fff;
+    border-radius: 14px;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.18);
+    transition: transform .2s, box-shadow .2s;
+  }
+  .app-store-badge:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(0,0,0,0.5); }
+  .app-store-badge .apple {
+    width: 30px; height: 30px;
+  }
+  .app-store-badge .label small {
+    display: block; font-size: 11px; opacity: 0.75; line-height: 1; letter-spacing: 0.02em;
+  }
+  .app-store-badge .label strong {
+    display: block; font-size: 19px; font-weight: 600; letter-spacing: -0.01em; margin-top: 2px;
+  }
+  .stat {
+    display: flex; align-items: center; gap: 10px;
+    color: var(--ink-dim);
+    font-size: 14px;
+  }
+  .stat .stars {
+    color: var(--mood-normal);
+    letter-spacing: 2px;
+  }
+
+  /* === Hero phone + characters stage === */
+  .stage {
+    position: relative;
+    aspect-ratio: 1 / 1.05;
+    width: 100%;
+    max-width: 520px;
+    margin-left: auto;
+    z-index: 2;
+  }
+  .phone {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(-4deg);
+    width: 64%;
+    aspect-ratio: 9 / 19.5;
+    background: #0d0820;
+    border-radius: 46px;
+    padding: 8px;
+    box-shadow:
+      0 0 0 2px rgba(255,255,255,0.06),
+      0 30px 80px -10px rgba(85, 50, 160, 0.6),
+      0 60px 120px -20px rgba(0,0,0,0.7);
+    animation: floatPhone 7s ease-in-out infinite;
+  }
+  @keyframes floatPhone {
+    0%,100% { transform: translate(-50%, -50%) rotate(-4deg); }
+    50%     { transform: translate(-50%, -54%) rotate(-2deg); }
+  }
+  .phone-screen {
+    width: 100%; height: 100%;
+    border-radius: 38px;
+    overflow: hidden;
+    background: #15102e;
+    position: relative;
+  }
+  .phone-screen img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: top;
+    display: block;
+  }
+  .notch {
+    position: absolute;
+    top: 14px; left: 50%; transform: translateX(-50%);
+    width: 38%;
+    height: 30px;
+    background: #000;
+    border-radius: 22px;
+    z-index: 2;
+  }
+
+  /* Mood shape characters */
+  .char {
+    position: absolute;
+    pointer-events: none;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 18px 30px rgba(0,0,0,0.45));
+    animation: floatChar var(--dur, 6s) ease-in-out infinite;
+    animation-delay: var(--delay, 0s);
+  }
+  .char.tilt { animation-name: floatTilt; }
+  @keyframes floatChar {
+    0%,100% { transform: translateY(0) rotate(var(--rot, 0deg)); }
+    50%     { transform: translateY(-14px) rotate(calc(var(--rot, 0deg) + 4deg)); }
+  }
+  @keyframes floatTilt {
+    0%,100% { transform: translateY(0) rotate(var(--rot, 0deg)); }
+    50%     { transform: translateY(10px) rotate(calc(var(--rot, 0deg) - 5deg)); }
+  }
+
+  /* positions, hero stage — kept inside the stage so they don't clip copy or nav */
+  .char.c-awesome { top: 6%;   left: 4%;   width: 19%; --rot: -8deg;  --dur: 6.4s; --delay: 0s; }
+  .char.c-good    { top: 12%;  right: 6%;  width: 17%; --rot: 12deg;  --dur: 7.2s; --delay: .6s; }
+  .char.c-normal  { bottom: 18%; left: 6%;  width: 16%; --rot: -14deg; --dur: 6.8s; --delay: 1.2s; }
+  .char.c-bad     { bottom: 6%;  right: 4%; width: 16%; --rot: 16deg;  --dur: 7.6s; --delay: .3s; }
+  .char.c-awful   { bottom: 36%; right: -2%; width: 14%; --rot: -22deg; --dur: 8s;   --delay: .9s; }
+
+  @media (max-width: 880px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .stage { max-width: 460px; margin: 40px auto 0; }
+    .hero { padding-bottom: 80px; }
+  }
+
+  /* === Section divider === */
+  section.block {
+    position: relative;
+    padding: 100px 0;
+  }
+  .section-head {
+    max-width: 760px;
+    margin: 0 0 56px;
+  }
+  .kicker {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--lavender);
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+  h2 {
+    font-family: "Fraunces", serif;
+    font-weight: 600;
+    font-size: clamp(36px, 5vw, 60px);
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    margin: 0 0 18px;
+    text-wrap: balance;
+  }
+  .section-head p {
+    color: var(--ink-dim);
+    font-size: 18px;
+    margin: 0;
+    max-width: 620px;
+  }
+
+  /* === Feature trio === */
+  .features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .feature {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 28px;
+    padding: 28px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 520px;
+  }
+  .feature .preview {
+    position: relative;
+    height: 280px;
+    margin: -8px -8px 24px;
+    border-radius: 22px;
+    overflow: hidden;
+    background: linear-gradient(160deg, #2a1f58, #15102e);
+    display: flex; align-items: flex-start; justify-content: center;
+    padding-top: 18px;
+  }
+  .feature .preview img {
+    width: 64%;
+    border-radius: 24px;
+    box-shadow: 0 20px 50px -10px rgba(0,0,0,0.5);
+    transform: translateY(8px);
+  }
+  .feature h3 {
+    font-family: "Fraunces", serif;
+    font-weight: 600;
+    font-size: 26px;
+    letter-spacing: -0.01em;
+    margin: 0 0 10px;
+  }
+  .feature p {
+    color: var(--ink-dim);
+    font-size: 15px;
+    margin: 0;
+  }
+  .duo-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 22px;
+    padding: 10px 16px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 999px;
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background .2s, transform .2s;
+  }
+  .duo-link:hover { background: rgba(255,255,255,0.1); transform: translateY(-1px); }
+
+  @media (max-width: 880px) {
+    .features { grid-template-columns: 1fr; }
+    .feature { min-height: auto; }
+  }
+
+  /* === Mood lineup band === */
+  .lineup {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 24px;
+    padding: 56px;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 36px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+  .mood-card {
+    text-align: center;
+  }
+  .mood-card .shape-wrap {
+    height: 140px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 18px;
+  }
+  .mood-card img.shape { width: 100%; max-width: 130px; height: auto; }
+  .mood-card .label {
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-size: 22px;
+    margin-bottom: 4px;
+  }
+  .mood-card .desc {
+    color: var(--ink-low);
+    font-size: 13px;
+  }
+  @media (max-width: 720px) {
+    .lineup { grid-template-columns: repeat(2, 1fr); padding: 28px; gap: 20px; }
+  }
+
+  /* === Side-by-side: privacy + tests === */
+  .duo {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 28px;
+  }
+  .duo-card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 28px;
+    padding: 44px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 420px;
+    overflow: hidden;
+    position: relative;
+  }
+  .duo-card.privacy {
+    background:
+      radial-gradient(120% 100% at 0% 0%, rgba(111, 203, 122, 0.15), transparent 50%),
+      var(--card);
+  }
+  .duo-card.tests {
+    background:
+      radial-gradient(120% 100% at 100% 0%, rgba(184, 157, 222, 0.22), transparent 55%),
+      var(--card);
+  }
+  .duo-card h3 {
+    font-family: "Fraunces", serif;
+    font-weight: 600;
+    font-size: 32px;
+    letter-spacing: -0.015em;
+    line-height: 1.1;
+    margin: 24px 0 14px;
+  }
+  .duo-card p {
+    color: var(--ink-dim);
+    font-size: 16px;
+    margin: 0;
+    max-width: 380px;
+  }
+  .duo-icon {
+    width: 56px; height: 56px;
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .duo-icon svg { width: 28px; height: 28px; }
+  .duo-icon img { width: 32px; height: 32px; }
+  .test-tags {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-top: 24px;
+  }
+  .test-tag {
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: rgba(183, 163, 224, 0.14);
+    border: 1px solid rgba(183, 163, 224, 0.22);
+    color: var(--lavender-soft);
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .privacy-stats {
+    display: flex; gap: 24px;
+    margin-top: 24px;
+  }
+  .privacy-stats .ps {
+    flex: 1;
+  }
+  .privacy-stats .ps strong {
+    font-family: "Fraunces", serif;
+    display: block;
+    font-size: 30px;
+    letter-spacing: -0.01em;
+    margin-bottom: 2px;
+    color: var(--mood-awesome);
+  }
+  .privacy-stats .ps span {
+    font-size: 13px;
+    color: var(--ink-low);
+  }
+  @media (max-width: 880px) {
+    .duo { grid-template-columns: 1fr; }
+    .duo-card { padding: 32px; min-height: auto; }
+  }
+
+  /* === CTA bottom === */
+  .closing {
+    text-align: center;
+    padding: 140px 0 100px;
+    position: relative;
+  }
+  .closing h2 {
+    font-size: clamp(44px, 7vw, 80px);
+    margin-bottom: 18px;
+  }
+  .closing p {
+    color: var(--ink-dim);
+    font-size: 18px;
+    max-width: 520px;
+    margin: 0 auto 40px;
+  }
+  .closing-row {
+    display: flex; align-items: center; justify-content: center; gap: 18px;
+    flex-wrap: wrap;
+  }
+  .closing-chars {
+    display: flex; justify-content: center; align-items: flex-end;
+    gap: 6px;
+    margin-bottom: 36px;
+    height: 100px;
+  }
+  .closing-chars img {
+    width: 88px;
+    height: 88px;
+    object-fit: contain;
+    animation: bobbing 3s ease-in-out infinite;
+    filter: drop-shadow(0 12px 22px rgba(0,0,0,0.35));
+  }
+  .closing-chars img:nth-child(1) { animation-delay: 0s; }
+  .closing-chars img:nth-child(2) { animation-delay: .2s; }
+  .closing-chars img:nth-child(3) { animation-delay: .4s; }
+  .closing-chars img:nth-child(4) { animation-delay: .6s; }
+  .closing-chars img:nth-child(5) { animation-delay: .8s; }
+  @keyframes bobbing {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+
+  /* === Footer === */
+  footer {
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 32px 0 48px;
+    color: var(--ink-low);
+    font-size: 13px;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 12px;
+  }
+  footer a { color: var(--ink-dim); text-decoration: none; margin-left: 20px; }
+  footer a:hover { color: var(--ink); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.001s !important; animation-iteration-count: 1 !important; }
+  }
+</style>
+</head>
+<body>
+  <div class="bg"></div>
+  <div class="grain"></div>
+
+  <!-- mood character icons live in /assets as PNGs -->
+
+  <!-- ========== NAV ========== -->
+  <header class="container site-header">
+    <nav class="top">
+      <a class="brand" href="#">
+        <img src="assets/app-icon.png" alt="MoodShapes app icon" />
+        <span class="brand-name">MoodShapes</span>
+      </a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#moods">Moods</a>
+        <a href="privacy.html">Privacy</a>
+      </div>
+      <a class="nav-cta" href="https://apps.apple.com/app/id6447459212" target="_blank" rel="noopener">
+        Get the app
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14m0 0l-6-6m6 6l-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </nav>
+  </header>
+
+  <!-- ========== HERO ========== -->
+  <section class="hero container">
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow"><span class="dot"></span> A friendlier mood journal</span>
+        <h1>How was your day, <em>in a shape?</em></h1>
+        <p class="hero-sub">
+          MoodShapes turns your check-in into a single, expressive tap. Five little
+          characters — five honest moods — and a beautifully quiet place to notice
+          how the weeks add up.
+        </p>
+        <div class="cta-row">
+          <a class="app-store-badge" href="https://apps.apple.com/app/id6447459212" target="_blank" rel="noopener">
+            <svg class="apple" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 12.04c-.03-3.07 2.5-4.55 2.62-4.62-1.43-2.09-3.66-2.38-4.45-2.41-1.89-.19-3.69 1.11-4.65 1.11-.97 0-2.45-1.08-4.03-1.05-2.07.03-3.98 1.2-5.05 3.05-2.15 3.74-.55 9.27 1.55 12.31 1.03 1.49 2.25 3.16 3.84 3.1 1.55-.06 2.13-1 4-1 1.86 0 2.39 1 4.02.97 1.66-.03 2.71-1.51 3.72-3.01 1.18-1.73 1.66-3.41 1.69-3.5-.04-.02-3.24-1.24-3.27-4.95M14.14 3.34c.85-1.04 1.43-2.48 1.27-3.92-1.23.05-2.71.82-3.59 1.85-.79.92-1.49 2.39-1.3 3.79 1.37.11 2.77-.69 3.62-1.72"/></svg>
+            <span class="label">
+              <small>Download on the</small>
+              <strong>App Store</strong>
+            </span>
+          </a>
+          <div class="stat">
+            <span class="stars">★★★★★</span>
+            <span>Free · iPhone</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phone + floating shapes stage -->
+      <div class="stage" aria-hidden="true">
+        <img class="char c-awesome" src="assets/mood-awesome.png" alt="" />
+        <img class="char tilt c-good" src="assets/mood-good.png" alt="" />
+        <img class="char c-normal" src="assets/mood-normal.png" alt="" />
+        <img class="char tilt c-bad" src="assets/mood-bad.png" alt="" />
+        <img class="char c-awful" src="assets/mood-awful.png" alt="" />
+
+        <div class="phone">
+          <div class="notch"></div>
+          <div class="phone-screen">
+            <img src="assets/screen-entries.png" alt="MoodShapes — daily entries with mood characters" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== MOOD LINEUP ========== -->
+  <section class="block container" id="moods">
+    <div class="section-head">
+      <div class="kicker">Meet the cast</div>
+      <h2>Five shapes. <em style="font-style:italic;">Endless feelings.</em></h2>
+      <p>Instead of a number from 1 to 10, you pick the shape that looks how you feel. It's quicker, kinder, and a little more fun than ticking a box.</p>
+    </div>
+
+    <div class="lineup">
+      <div class="mood-card">
+        <div class="shape-wrap"><img class="shape" src="assets/mood-awesome.png" alt="awesome mood" /></div>
+        <div class="label" style="color: var(--mood-awesome)">awesome</div>
+        <div class="desc">on top of the world</div>
+      </div>
+      <div class="mood-card">
+        <div class="shape-wrap"><img class="shape" src="assets/mood-good.png" alt="good mood" /></div>
+        <div class="label" style="color: var(--mood-good)">good</div>
+        <div class="desc">a steady kind of nice</div>
+      </div>
+      <div class="mood-card">
+        <div class="shape-wrap"><img class="shape" src="assets/mood-normal.png" alt="normal mood" /></div>
+        <div class="label" style="color: var(--mood-normal)">normal</div>
+        <div class="desc">just an ordinary day</div>
+      </div>
+      <div class="mood-card">
+        <div class="shape-wrap"><img class="shape" src="assets/mood-bad.png" alt="bad mood" /></div>
+        <div class="label" style="color: var(--mood-bad)">bad</div>
+        <div class="desc">a bit of a slog</div>
+      </div>
+      <div class="mood-card">
+        <div class="shape-wrap"><img class="shape" src="assets/mood-awful.png" alt="awful mood" /></div>
+        <div class="label" style="color: var(--mood-awful)">awful</div>
+        <div class="desc">today was a lot</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FEATURES ========== -->
+  <section class="block container" id="features">
+    <div class="section-head">
+      <div class="kicker">What's inside</div>
+      <h2>A tiny ritual that <em style="font-style:italic;">adds up</em>.</h2>
+      <p>Tap, tag, look back. The whole flow is built around the smallest possible moment of attention — and the longest possible memory of it.</p>
+    </div>
+
+    <div class="features">
+      <div class="feature">
+        <div class="preview">
+          <img src="assets/screen-entries.png" alt="Entries timeline" />
+        </div>
+        <h3>Log a mood in one tap</h3>
+        <p>Pick a shape, add a few tags, and you're done. No essays, no scoring, no streaks shaming you when life happens.</p>
+      </div>
+
+      <div class="feature">
+        <div class="preview">
+          <img src="assets/screen-charts.png" alt="Mood curve and donut chart" />
+        </div>
+        <h3>See the curve of your week</h3>
+        <p>Mood curves, counts, and a beautiful donut roll up your check-ins so the patterns show themselves — without a spreadsheet.</p>
+      </div>
+
+      <div class="feature">
+        <div class="preview">
+          <img src="assets/screen-stats.png" alt="Monthly mood heatmap" />
+        </div>
+        <h3>A month at a glance</h3>
+        <p>The calendar heatmap turns thirty small taps into one honest picture of the month. Some weeks are green. Some aren't. Both are okay.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PRIVACY + TESTS ========== -->
+  <section class="block container" id="privacy">
+    <div class="duo">
+      <div class="duo-card privacy">
+        <div>
+          <h3>Your moods stay <em style="font-style:italic;">on your phone</em>.</h3>
+          <p>No accounts. No cloud syncing your inner weather to a server somewhere. MoodShapes stores everything locally and lets you export when you want it elsewhere.</p>
+          <a class="duo-link" href="privacy.html">
+            Read the full privacy policy
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14m0 0l-6-6m6 6l-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+        <div class="privacy-stats">
+          <div class="ps"><strong>0</strong><span>accounts required</span></div>
+          <div class="ps"><strong>0</strong><span>trackers</span></div>
+          <div class="ps"><strong>100%</strong><span>on device</span></div>
+        </div>
+      </div>
+
+      <div class="duo-card tests">
+        <div>
+          <h3>Quick check-ins from <em style="font-style:italic;">real research</em>.</h3>
+          <p>Optional self-assessment tests like WHO-5 give you a five-minute reading on well-being — the same questions clinicians use, with friendlier framing.</p>
+        </div>
+        <div class="test-tags">
+          <span class="test-tag">WHO-5 Well-Being</span>
+          <span class="test-tag">PHQ-9</span>
+          <span class="test-tag">GAD-7</span>
+          <span class="test-tag">SWLS</span>
+          <span class="test-tag">+ more</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CLOSING CTA ========== -->
+  <section class="closing container">
+    <div class="closing-chars" aria-hidden="true">
+      <img src="assets/mood-awful.png" alt="" />
+      <img src="assets/mood-bad.png" alt="" />
+      <img src="assets/mood-normal.png" alt="" />
+      <img src="assets/mood-good.png" alt="" />
+      <img src="assets/mood-awesome.png" alt="" />
+    </div>
+    <h2>Pick a shape. <em style="font-style:italic;">Start a habit.</em></h2>
+    <p>MoodShapes is free on the App Store. Two minutes a day. Zero pressure.</p>
+    <div class="closing-row">
+      <a class="app-store-badge" href="https://apps.apple.com/app/id6447459212" target="_blank" rel="noopener">
+        <svg class="apple" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 12.04c-.03-3.07 2.5-4.55 2.62-4.62-1.43-2.09-3.66-2.38-4.45-2.41-1.89-.19-3.69 1.11-4.65 1.11-.97 0-2.45-1.08-4.03-1.05-2.07.03-3.98 1.2-5.05 3.05-2.15 3.74-.55 9.27 1.55 12.31 1.03 1.49 2.25 3.16 3.84 3.1 1.55-.06 2.13-1 4-1 1.86 0 2.39 1 4.02.97 1.66-.03 2.71-1.51 3.72-3.01 1.18-1.73 1.66-3.41 1.69-3.5-.04-.02-3.24-1.24-3.27-4.95M14.14 3.34c.85-1.04 1.43-2.48 1.27-3.92-1.23.05-2.71.82-3.59 1.85-.79.92-1.49 2.39-1.3 3.79 1.37.11 2.77-.69 3.62-1.72"/></svg>
+        <span class="label">
+          <small>Download on the</small>
+          <strong>App Store</strong>
+        </span>
+      </a>
+    </div>
+  </section>
+
+  <footer class="container">
+    <div>© 2026 MoodShapes · Made with care for your inner weather</div>
+    <div>
+      <a href="https://apps.apple.com/app/id6447459212" target="_blank" rel="noopener">App Store</a>
+      <a href="privacy.html">Privacy</a>
+    </div>
+  </footer>
+
+</body>
+</html>
