@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{{title}}</title>
+<meta name="description" content="{{description}}" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="icon" type="image/png" href="assets/app-icon.png" />
+<link rel="apple-touch-icon" href="assets/app-icon.png" />
+<link rel="stylesheet" href="assets/site.css" />
+<meta name="theme-color" content="#0E0A1F" />
+</head>
+<body>
+  <div class="bg"></div>
+  <div class="grain"></div>
+
+  <header class="container site-header">
+    <nav class="top">
+      <a class="brand" href="index.html">
+        <img src="assets/app-icon.png" alt="MoodShapes app icon" />
+        <span class="brand-name">MoodShapes</span>
+      </a>
+      <div class="nav-links">
+{{nav_links}}
+      </div>
+      <a class="nav-back" href="index.html">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M19 12H5m0 0l6-6m-6 6l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back home
+      </a>
+    </nav>
+  </header>
+
+  <div class="container narrow">
+    <header class="legal-header">
+      <div class="header-shapes" aria-hidden="true">
+        <img src="assets/mood-awful.png" alt="" />
+        <img src="assets/mood-bad.png" alt="" />
+        <img src="assets/mood-normal.png" alt="" />
+        <img src="assets/mood-good.png" alt="" />
+        <img src="assets/mood-awesome.png" alt="" />
+      </div>
+      <div class="kicker">{{kicker}}</div>
+      <h1>{{h1}}</h1>
+      <p class="lede">{{lede}}</p>
+      <div class="meta">{{meta}}</div>
+    </header>
+
+    <div class="tldr">
+{{tldr}}
+    </div>
+
+    <nav class="toc" aria-label="Table of contents">
+      <div class="toc-title">Contents</div>
+      <ol>
+{{toc}}
+      </ol>
+    </nav>
+
+    <article class="policy">
+{{body}}
+    </article>
+
+    <div class="legal-pair">
+{{legal_pair}}
+    </div>
+  </div>
+
+  <div class="container">
+    <footer class="site-footer">
+      <div>© 2026 MoodShapes · Made with care for your inner weather</div>
+      <div>
+        <a href="index.html">Home</a>
+        <a href="https://apps.apple.com/app/id6447459212" target="_blank" rel="noopener">App Store</a>
+        <a href="{{footer_other}}">{{footer_other_label}}</a>
+        <a href="mailto:moodshaperapp@gmail.com">Contact</a>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
